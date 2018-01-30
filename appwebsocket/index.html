@@ -9,17 +9,14 @@
 
     <script>
       var socket = io.connect('http://localhost');
-      socket.on('news', function (data) {
+      socket.on('conn', function (data) {
         console.log(data);
-        socket.emit('my other event', { my: 'data' });
-      });
-      socket.on('sayhello', function () {
-        alert(' Have joined!');
       });
 
 
       $('#submit').on('click', function(){
-        socket.emit('chat message', $('#username').val());
+        console.log('send: '+ $('#username').val());
+        socket.emit('inputgia', $('#username').val());
       });
       
 </script>

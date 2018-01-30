@@ -1,0 +1,147 @@
+<html>
+  <head>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <script src="http://code.jquery.com/jquery-2.2.4.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
+    <style>
+        .coin_pump_now {
+            color: green;
+            background-color: rgb(234, 255, 234);
+        }
+
+        .coin_pump {
+            color: #6ca82e;
+            background-color: white;
+            transition: background-color 1s;
+        }
+
+        .coin_dump_now {
+            color: red;
+            background-color: rgb(255, 234, 234);
+        }
+        .coin_dump {
+            color: #ce5c5c;
+            background-color: white;
+            transition: background-color 1s;
+        }
+
+        .namecoin{
+            color:black !important;
+        }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Price</th>
+          </tr>
+        </thead>
+        <tbody>
+            <tr id="BTC">
+              <td>1</td>
+              <td class="namecoin"></span> Bitcoin BTC</td>
+              <td><span class="price">$10000</span></td>
+            </tr>
+            <tr id="ETH">
+              <td>2</td>
+              <td class="namecoin">Ethereum ETH</td>
+              <td><span class="price">$10000</span></td>
+            </tr>
+            <tr id="XRP">
+              <td>3</td>
+              <td class="namecoin">Ripple XRP</td>
+              <td><span class="price">$10000</span></td>
+            </tr>
+            <tr id="BCH">
+              <td>4</td>
+              <td class="namecoin">Bitcoin Cash BCH</td>
+              <td><span class="price">$10000</span></td>
+            </tr>
+            <tr id="ADA">
+              <td>5</td>
+              <td class="namecoin">Cardano ADA</td>
+              <td><span class="price">$10000</span></td>
+            </tr>
+            <tr id="NEO">
+              <td>5</td>
+              <td class="namecoin">Neo Neo</td>
+              <td><span class="price">$10000</span></td>
+            </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <script>
+      var socket = io.connect('http://localhost');
+      socket.on('conn', function (data) {
+        console.log(data);
+      });
+
+
+      socket.on('update', function (data) {
+        if(data.coin=="BTC"){
+            var dom = $('#BTC');
+            processing(dom, data);
+        }else if(data.coin=="ETH"){
+            var dom = $('#ETH');
+            processing(dom, data);
+        }else if(data.coin=="XRP"){
+            var dom = $('#XRP');
+            processing(dom, data);
+        }else if(data.coin=="BCH"){
+            var dom = $('#BCH');
+            processing(dom, data);
+        }else if(data.coin=="ADA"){
+            var dom = $('#ADA');
+            processing(dom, data);
+        }else if(data.coin=="NEO"){
+            var dom = $('#NEO');
+            processing(dom, data);
+        }
+
+      });
+
+      function processing(dom, data){
+        if(data.perc<0){
+            dump(dom);
+        }else{
+            // console.log('call');
+            pump(dom);
+        }
+        var price = $(dom).find('.price');
+        $(price).html('$'+data.price);
+      }
+
+
+      function pump(dom){
+        $(dom).removeClass('coin_dump_now');          
+        $(dom).removeClass('coin_dump');
+
+        $(dom).addClass('coin_pump_now');
+        $(dom).removeClass('coin_pump');
+        setTimeout(function(){
+            $(dom).removeClass('coin_pump_now');
+            $(dom).addClass('coin_pump');
+        }, 500);
+        
+      }
+
+      function dump(dom){
+        $(dom).removeClass('coin_pump');
+        $(dom).removeClass('coin_pump_now');
+
+
+        $(dom).addClass('coin_dump_now');
+        $(dom).removeClass('coin_dump');
+        setTimeout(function(){
+            $(dom).removeClass('coin_dump_now');
+            $(dom).addClass('coin_dump');
+        }, 500);
+      }
+</script>
+  </body>
+</html>

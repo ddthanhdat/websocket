@@ -45,10 +45,6 @@ app.use(function(err, req, res, next) {
 });
 
 
-
-// server.listen(3000);
-
-
 var app = require('express')();
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
@@ -59,18 +55,43 @@ app.get('/', function (req, res) {
   res.sendfile(__dirname + '/index.html');
 });
 
+
+app.get('/hienthi', function (req, res) {
+  res.sendfile(__dirname + '/hienthi.html');
+});
+
 io.on('connection', function (socket) {
-  console.log("has a conennect!");
+  console.log(socket.id+" is conennect!");
+  socket.on('disconnect', function () {
+  console.log(socket.id+" disconnected!");
+    
+    io.emit('user disconnected');
+  });
+
+  socket.emit('conn', 'you connected server!');
 
   // socket.emit('news', { hello: 'world' });
   socket.on('my other event', function (data) {
     console.log(data);
   });
-  socket.on('chat message', function(msg){
-    console.log('message: ' + msg);
+  socket.on('inputgia', function(data){
+    console.log(data);
+    // socket.broadcast.emit('updategia', { gia: "data" });
+    
+    socket.broadcast.emit('update', {coin: 'BTC', price: 9999, perc: -1});
+    
   });
 
-  socket.emit('sayhello', { hello: 'world' });
+  
 });
+setInterval(function(){
+    var price = Math.floor(Math.random()*1000);
+    var perc = 500 - price;
+    var items = ['BTC','ETH','XRP', 'BCH', 'ADA', 'NEO'];
+    var item = items[Math.floor(Math.random()*items.length)];
+    // console.log(item);
+    io.sockets.emit('update', {coin: item, price: price, perc: perc});
+    // console.log(item);
+  },500);
 
 module.exports = app;
