@@ -8,16 +8,12 @@
     <input type="text" id="username"> <button class="" id="submit">submit</button>
 
     <script>
-      var socket = io.connect('http://localhost'); // mở ra kết nối đến server socket
-      socket.on('conn', function (data) { // mở nhận data từ namespace conn
+      var socket = io.connect('http://localhost');
+      socket.emit('sayhello', function (data) {
         console.log(data);
       });
 
 
-      $('#submit').on('click', function(){
-        console.log('send: '+ $('#username').val());
-        socket.emit('inputgia', $('#username').val());
-      });
       
 </script>
   </body>

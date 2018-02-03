@@ -44,13 +44,14 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
-
+// sử dụng cổng trùng với nodejs
 var app = require('express')();
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
 
 server.listen(80);
 
+// dùng load file
 app.get('/', function (req, res) {
   res.sendfile(__dirname + '/index.html');
 });
@@ -60,9 +61,11 @@ app.get('/hienthi', function (req, res) {
   res.sendfile(__dirname + '/hienthi.html');
 });
 
-io.on('connection', function (socket) {
+
+
+io.on('connection', function (socket) { // mỗi socket tương ứng với 1 client mở ứng dụng.
   console.log(socket.id+" is conennect!");
-  socket.on('disconnect', function () {
+  socket.on('disconnect', function () { // mở phiên lắng nghe bằng on
   console.log(socket.id+" disconnected!");
     
     io.emit('user disconnected');
@@ -71,20 +74,23 @@ io.on('connection', function (socket) {
   socket.emit('conn', 'you connected server!');
 
   // socket.emit('news', { hello: 'world' });
-  socket.on('my other event', function (data) {
-    console.log(data);
-  });
+  // socket.on('sayhello', function (data) {
+  //   console.log("asd");
+  // });
   socket.on('inputgia', function(data){
     console.log(data);
     // socket.broadcast.emit('updategia', { gia: "data" });
     
-    socket.broadcast.emit('update', {coin: 'BTC', price: 9999, perc: -1});
+    socket.broadcast.emit('update', {coin: 'BTC', price: 9999, perc: -1}); // 1 socket sẽ gửi đi lệnh đến tất cả socket khác.
     
   });
 
   
 });
-setInterval(function(){
+
+
+
+setInterval(function(){  // cứ 0.5s chạy lại
     var price = Math.floor(Math.random()*1000);
     var perc = 500 - price;
     var items = ['BTC','ETH','XRP', 'BCH', 'ADA', 'NEO'];
